@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Php-doclet by bedrin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Php-doclet</h1>
+      <h2 class="project-tagline">Annotations support for PHP</h2>
+      <a href="https://github.com/bedrin/php-doclet" class="btn">View on GitHub</a>
+      <a href="https://github.com/bedrin/php-doclet/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/bedrin/php-doclet/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="php-doclet" class="anchor" href="#php-doclet" aria-hidden="true"><span class="octicon octicon-link"></span></a>php-doclet</h1>
+
+<p>php-doclet provides annotations support to PHP 5.1+ similar to Java 1.5</p>
+
+<p>Lets define some annotations on Person class</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * This class represents person instance in the system</span></span>
+<span class="pl-s1"><span class="pl-c"> *</span></span>
+<span class="pl-s1"><span class="pl-c"> * <span class="pl-k">@author</span> Dmitry Bedrin mailto:Bedrin@msn.com</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">Person</span> <span class="pl-k">extends</span> <span class="pl-e">AnnotatedClass</span> {</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c">     * First name</span></span>
+<span class="pl-s1"><span class="pl-c">     *</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@var</span> string</span></span>
+<span class="pl-s1"><span class="pl-c">     * @validator.required</span></span>
+<span class="pl-s1"><span class="pl-c">     * @validator.maxlength 20</span></span>
+<span class="pl-s1"><span class="pl-c">     */</span></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-smi">$firstName</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c">     * Last name</span></span>
+<span class="pl-s1"><span class="pl-c">     *</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@var</span> string</span></span>
+<span class="pl-s1"><span class="pl-c">     * @validator.required</span></span>
+<span class="pl-s1"><span class="pl-c">     * @validator.maxlength 20</span></span>
+<span class="pl-s1"><span class="pl-c">     */</span></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-smi">$lastName</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c">     * Description of the person</span></span>
+<span class="pl-s1"><span class="pl-c">     *</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@var</span> string</span></span>
+<span class="pl-s1"><span class="pl-c">     * @validator.maxlength 50</span></span>
+<span class="pl-s1"><span class="pl-c">     */</span></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-smi">$description</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">}</span></pre></div>
+
+<p>Now we can write a simple validator which will use these annotations</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1"><span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c"> * Validator class enables validate {<span class="pl-k">@link</span> AnnotatedClass} ancestors</span></span>
+<span class="pl-s1"><span class="pl-c"> * by given annotations.</span></span>
+<span class="pl-s1"><span class="pl-c"> *</span></span>
+<span class="pl-s1"><span class="pl-c"> * Currently  implemented @validator.required and @validator.maxlength</span></span>
+<span class="pl-s1"><span class="pl-c"> *</span></span>
+<span class="pl-s1"><span class="pl-c"> * <span class="pl-k">@author</span> Dmitry Bedrin mailto:Bedrin@msn.com</span></span>
+<span class="pl-s1"><span class="pl-c"> */</span></span>
+<span class="pl-s1"><span class="pl-k">class</span> <span class="pl-en">Validator</span> {</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c">     * Validates {<span class="pl-k">@link</span> AnnotatedClass} ancestor</span></span>
+<span class="pl-s1"><span class="pl-c">     *</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@param</span> AnnotatedClass $object</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@return</span> array</span></span>
+<span class="pl-s1"><span class="pl-c">     */</span></span>
+<span class="pl-s1">    <span class="pl-k">public</span> <span class="pl-k">function</span> <span class="pl-en">validate</span>(<span class="pl-c1">AnnotatedClass</span> <span class="pl-smi">$object</span>) {</span>
+<span class="pl-s1">        <span class="pl-smi">$errorFields</span> <span class="pl-k">=</span> <span class="pl-c1">array</span>();</span>
+<span class="pl-s1">        <span class="pl-smi">$annotation</span> <span class="pl-k">=</span> <span class="pl-smi">$object</span><span class="pl-k">-&gt;</span>getAnnotation();</span>
+<span class="pl-s1">        <span class="pl-k">foreach</span> (<span class="pl-smi">$annotation</span><span class="pl-k">-&gt;</span>getPropertyAnnotationsIterator() <span class="pl-k">as</span> <span class="pl-smi">$propertyAnnotation</span>) {</span>
+<span class="pl-s1">            <span class="pl-k">foreach</span> (<span class="pl-smi">$propertyAnnotation</span><span class="pl-k">-&gt;</span>getAnnotationTagsIterator() <span class="pl-k">as</span> <span class="pl-smi">$annotationTag</span>) {</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                <span class="pl-k">if</span> (<span class="pl-s"><span class="pl-pds">'</span>validator.required<span class="pl-pds">'</span></span> <span class="pl-k">==</span> <span class="pl-smi">$annotationTag</span><span class="pl-k">-&gt;</span>getName()) {</span>
+<span class="pl-s1">                    <span class="pl-k">if</span> (<span class="pl-k">!</span><span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>validateRequired(<span class="pl-smi">$object</span>,<span class="pl-smi">$propertyAnnotation</span><span class="pl-k">-&gt;</span>getName())) {</span>
+<span class="pl-s1">                        <span class="pl-smi">$errorFields</span>[] <span class="pl-k">=</span> <span class="pl-c1">array</span>(<span class="pl-smi">$propertyAnnotation</span><span class="pl-k">-&gt;</span>getName(),<span class="pl-s"><span class="pl-pds">'</span>is required<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                    }</span>
+<span class="pl-s1">                }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">                <span class="pl-k">elseif</span> (<span class="pl-s"><span class="pl-pds">'</span>validator.maxlength<span class="pl-pds">'</span></span> <span class="pl-k">==</span> <span class="pl-smi">$annotationTag</span><span class="pl-k">-&gt;</span>getName()) {</span>
+<span class="pl-s1">                    <span class="pl-k">if</span> (<span class="pl-k">!</span><span class="pl-smi">$this</span><span class="pl-k">-&gt;</span>validateMaxLength(<span class="pl-smi">$object</span>,<span class="pl-smi">$propertyAnnotation</span><span class="pl-k">-&gt;</span>getName(),<span class="pl-smi">$annotationTag</span><span class="pl-k">-&gt;</span>getValue())) {</span>
+<span class="pl-s1">                        <span class="pl-smi">$errorFields</span>[] <span class="pl-k">=</span> <span class="pl-c1">array</span>(<span class="pl-smi">$propertyAnnotation</span><span class="pl-k">-&gt;</span>getName(),<span class="pl-s"><span class="pl-pds">'</span>maxlength exceeded<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1">                    }</span>
+<span class="pl-s1">                }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">            }</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-smi">$errorFields</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c">     * Required validation</span></span>
+<span class="pl-s1"><span class="pl-c">     *</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@param</span> AnnotatedClass $object</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@param</span> string $propertyName</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@return</span> bool</span></span>
+<span class="pl-s1"><span class="pl-c">     */</span></span>
+<span class="pl-s1">    <span class="pl-k">private</span> <span class="pl-k">function</span> <span class="pl-en">validateRequired</span>(<span class="pl-c1">AnnotatedClass</span> <span class="pl-smi">$object</span>,<span class="pl-smi">$propertyName</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-c1">empty</span>(<span class="pl-smi">$object</span><span class="pl-k">-&gt;</span><span class="pl-smi">$propertyName</span>)) {</span>
+<span class="pl-s1">            <span class="pl-k">return</span> <span class="pl-c1">false</span>;</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-c1">true</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c">/**</span></span>
+<span class="pl-s1"><span class="pl-c">     * Max length validation</span></span>
+<span class="pl-s1"><span class="pl-c">     *</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@param</span> AnnotatedClass $object</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@param</span> string $propertyName</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@param</span> int $maxLength</span></span>
+<span class="pl-s1"><span class="pl-c">     * <span class="pl-k">@return</span> boolean</span></span>
+<span class="pl-s1"><span class="pl-c">     */</span></span>
+<span class="pl-s1">    <span class="pl-k">private</span> <span class="pl-k">function</span> <span class="pl-en">validateMaxLength</span>(<span class="pl-c1">AnnotatedClass</span> <span class="pl-smi">$object</span>,<span class="pl-smi">$propertyName</span>,<span class="pl-smi">$maxLength</span>) {</span>
+<span class="pl-s1">        <span class="pl-k">if</span> (<span class="pl-k">!</span><span class="pl-c1">empty</span>(<span class="pl-smi">$object</span><span class="pl-k">-&gt;</span><span class="pl-smi">$propertyName</span>)) {</span>
+<span class="pl-s1">            <span class="pl-smi">$value</span> <span class="pl-k">=</span> <span class="pl-smi">$object</span><span class="pl-k">-&gt;</span><span class="pl-smi">$propertyName</span>;</span>
+<span class="pl-s1">            <span class="pl-k">return</span> (<span class="pl-c1">strlen</span>(<span class="pl-smi">$value</span>) <span class="pl-k">&lt;=</span> <span class="pl-smi">$maxLength</span>);</span>
+<span class="pl-s1">        }</span>
+<span class="pl-s1">        <span class="pl-k">return</span> <span class="pl-c1">true</span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// This Person instance should fail on lastName and description fields assertion</span></span>
+<span class="pl-s1"><span class="pl-smi">$person</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Person</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$person</span><span class="pl-k">-&gt;</span><span class="pl-smi">firstName</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>Vasya<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$person</span><span class="pl-k">-&gt;</span><span class="pl-smi">description</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>Hi! I am Vasya Pupkin and I forgot to fill in my last name. Suppose it will raise an error in Validator<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$validator</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Validator</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$person1ValidationErrors</span> <span class="pl-k">=</span> <span class="pl-smi">$validator</span><span class="pl-k">-&gt;</span>validate(<span class="pl-smi">$person</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// This person should pass validation successfully</span></span>
+<span class="pl-s1"><span class="pl-smi">$person</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Person</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$person</span><span class="pl-k">-&gt;</span><span class="pl-smi">firstName</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>Vasya<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$person</span><span class="pl-k">-&gt;</span><span class="pl-smi">lastName</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>Pupkin<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$validator</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">Validator</span>();</span>
+<span class="pl-s1"><span class="pl-smi">$person2ValidationErrors</span> <span class="pl-k">=</span> <span class="pl-smi">$validator</span><span class="pl-k">-&gt;</span>validate(<span class="pl-smi">$person</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Outputing results</span></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;h1&gt;Person 1 validation results:&lt;/h1&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-c1">empty</span>(<span class="pl-smi">$person1ValidationErrors</span>)) {</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>OK<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"><span class="pl-k">else</span> {</span>
+<span class="pl-s1">    <span class="pl-k">foreach</span> (<span class="pl-smi">$person1ValidationErrors</span> <span class="pl-k">as</span> <span class="pl-smi">$error</span>) {</span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-c1">join</span>(<span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span>, <span class="pl-smi">$error</span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;br/&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;h1&gt;Person 2 validation results:&lt;/h1&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-c1">empty</span>(<span class="pl-smi">$person2ValidationErrors</span>)) {</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>OK<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"><span class="pl-k">else</span> {</span>
+<span class="pl-s1">    <span class="pl-k">foreach</span> (<span class="pl-smi">$person2ValidationErrors</span> <span class="pl-k">as</span> <span class="pl-smi">$error</span>) {</span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-c1">join</span>(<span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span>, <span class="pl-smi">$error</span>) <span class="pl-k">.</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;br/&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">}</span></pre></div>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/bedrin/php-doclet">Php-doclet</a> is maintained by <a href="https://github.com/bedrin">bedrin</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
